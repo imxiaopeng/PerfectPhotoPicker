@@ -1,4 +1,4 @@
-package com.lling.photopickersample;
+package com.cxp.photopickersample;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -8,6 +8,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -35,19 +36,19 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(com.cxp.photopickersample.R.layout.activity_main);
         int screenWidth = OtherUtils.getWidthInPx(getApplicationContext());
         mColumnWidth = (screenWidth - OtherUtils.dip2px(getApplicationContext(), 4))/3;
-        mChoiceMode = (RadioGroup) findViewById(R.id.choice_mode);
-        mShowCamera = (RadioGroup) findViewById(R.id.show_camera);
-        mRequestNum = (EditText) findViewById(R.id.request_num);
-        mRequestNumLayout = (LinearLayout) findViewById(R.id.num_layout);
-        mGrideView = (GridView) findViewById(R.id.gridview);
+        mChoiceMode = (RadioGroup) findViewById(com.cxp.photopickersample.R.id.choice_mode);
+        mShowCamera = (RadioGroup) findViewById(com.cxp.photopickersample.R.id.show_camera);
+        mRequestNum = (EditText) findViewById(com.cxp.photopickersample.R.id.request_num);
+        mRequestNumLayout = (LinearLayout) findViewById(com.cxp.photopickersample.R.id.num_layout);
+        mGrideView = (GridView) findViewById(com.cxp.photopickersample.R.id.gridview);
 
         mChoiceMode.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int checkedId) {
-                if(checkedId == R.id.multi){
+                if(checkedId == com.cxp.photopickersample.R.id.multi){
                     mRequestNumLayout.setVisibility(View.VISIBLE);
                 }else{
                     mRequestNumLayout.setVisibility(View.GONE);
@@ -55,20 +56,25 @@ public class MainActivity extends Activity {
                 }
             }
         });
-
-        findViewById(R.id.picker_btn).setOnClickListener(new View.OnClickListener() {
+        Button btn_clean= (Button) findViewById(R.id.btn_clean);
+        try {
+            btn_clean.setText(DataCleanManager.getTotalCacheSize(this));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        findViewById(com.cxp.photopickersample.R.id.picker_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 int selectedMode;
-                if(mChoiceMode.getCheckedRadioButtonId() == R.id.multi){
+                if(mChoiceMode.getCheckedRadioButtonId() == com.cxp.photopickersample.R.id.multi){
                     selectedMode = PhotoPickerActivity.MODE_MULTI;
                 }else{
                     selectedMode = PhotoPickerActivity.MODE_SINGLE;
                 }
 
                 boolean showCamera = false;
-                if(mShowCamera.getCheckedRadioButtonId() == R.id.show) {
+                if(mShowCamera.getCheckedRadioButtonId() == com.cxp.photopickersample.R.id.show) {
                     showCamera = true;
                 }
 
@@ -85,6 +91,10 @@ public class MainActivity extends Activity {
         });
     }
 
+    public void clean(View v){
+        DataCleanManager.clearAllCache(this);
+        ((Button)v).setText("清除缓存");
+    }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -161,8 +171,8 @@ public class MainActivity extends Activity {
         public View getView(int position, View convertView, ViewGroup parent) {
             ImageView imageView;
             if(convertView == null){
-                convertView = getLayoutInflater().inflate(R.layout.item_image, null);
-                imageView = (ImageView) convertView.findViewById(R.id.imageView);
+                convertView = getLayoutInflater().inflate(com.cxp.photopickersample.R.layout.item_image, null);
+                imageView = (ImageView) convertView.findViewById(com.cxp.photopickersample.R.id.imageView);
                 convertView.setTag(imageView);
                 LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(mColumnWidth, mColumnWidth);
                 imageView.setLayoutParams(params);

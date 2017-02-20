@@ -97,6 +97,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="选择照片" />
+    <Button
+        android:onClick="clean"
+        android:id="@+id/btn_clean"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="清除缓存" />
 
     <GridView
         android:id="@+id/gridview"
