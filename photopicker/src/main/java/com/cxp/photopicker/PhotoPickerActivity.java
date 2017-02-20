@@ -1,4 +1,4 @@
-package com.lling.photopicker;
+package com.cxp.photopicker;
 
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
@@ -11,6 +11,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
@@ -23,19 +24,23 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.lling.photopicker.adapters.FolderAdapter;
-import com.lling.photopicker.adapters.PhotoAdapter;
-import com.lling.photopicker.beans.Photo;
-import com.lling.photopicker.beans.PhotoFolder;
-import com.lling.photopicker.utils.LogUtils;
-import com.lling.photopicker.utils.OtherUtils;
-import com.lling.photopicker.utils.PhotoUtils;
+import com.cxp.photopicker.adapters.FolderAdapter;
+import com.cxp.photopicker.adapters.PhotoAdapter;
+import com.cxp.photopicker.beans.Photo;
+import com.cxp.photopicker.beans.PhotoFolder;
+import com.cxp.photopicker.utils.LogUtils;
+import com.cxp.photopicker.utils.OtherUtils;
+import com.cxp.photopicker.utils.PhotoUtils;
+import com.cxp.photopicker.utils.PictureUtils;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import static android.R.attr.data;
+import static android.media.CamcorderProfile.get;
 
 /**
  * @Class: PhotoPickerActivity
@@ -49,6 +54,7 @@ public class PhotoPickerActivity extends Activity implements PhotoAdapter.PhotoC
 
     public final static String KEY_RESULT = "picker_result";
     public final static int REQUEST_CAMERA = 1;
+    public final static int REQUEST_CUT = 2;
 
     /** 是否显示相机 */
     public final static String EXTRA_SHOW_CAMERA = "is_show_camera";
@@ -89,6 +95,11 @@ public class PhotoPickerActivity extends Activity implements PhotoAdapter.PhotoC
 
     /** 拍照时存储拍照结果的临时文件 */
     private File mTmpFile;
+    private Uri mCropedUri;
+    /**
+     * 裁剪后返回
+     */
+    public static final int RESULT_PHOTO_PIC=11;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,6 +114,9 @@ public class PhotoPickerActivity extends Activity implements PhotoAdapter.PhotoC
         getPhotosTask.execute();
     }
 
+    public void back(View v){
+        finish();
+    }
     private void initView() {
         mGridView = (GridView) findViewById(R.id.photo_gridview);
         mPhotoNumTV = (TextView) findViewById(R.id.photo_num);
@@ -112,12 +126,6 @@ public class PhotoPickerActivity extends Activity implements PhotoAdapter.PhotoC
             public boolean onTouch(View v, MotionEvent event) {
                 //消费触摸事件，防止触摸底部tab栏也会选中图片
                 return true;
-            }
-        });
-        findViewById(R.id.btn_back).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
             }
         });
     }
@@ -222,10 +230,19 @@ public class PhotoPickerActivity extends Activity implements PhotoAdapter.PhotoC
      */
     private void returnData() {
         // 返回已选择的图片数据
-        Intent data = new Intent();
-        data.putStringArrayListExtra(KEY_RESULT, mSelectList);
-        setResult(RESULT_OK, data);
-        finish();
+        if(mSelectMode==PhotoPickerActivity.MODE_SINGLE){
+            String imgPath=mSelectList.get(0);
+          Uri mCropedUri = PictureUtils.generateTempCroppedImageUri(this);
+            Intent intent=new Intent(this,CutPictureActivity.class);
+            intent.putExtra("cropUri", mCropedUri);
+            intent.putExtra("bitmap", imgPath);
+            startActivityForResult(intent,REQUEST_CUT);
+        }else{
+            Intent data = new Intent();
+            data.putStringArrayListExtra(KEY_RESULT, mSelectList);
+            setResult(RESULT_OK, data);
+            finish();
+        }
     }
 
     /**
@@ -394,6 +411,16 @@ public class PhotoPickerActivity extends Activity implements PhotoAdapter.PhotoC
                 if(mTmpFile != null && mTmpFile.exists()){
                     mTmpFile.delete();
                 }
+            }
+        }else if(requestCode == REQUEST_CUT){
+            if(resultCode == Activity.RESULT_OK) {
+                mCropedUri=data.getParcelableExtra("result");
+                String path=PictureUtils.getFileProvideRealPath(this,mCropedUri);
+                Log.e("message",mCropedUri+"");
+                Log.e("message",path+"");
+                data.putExtra("path",path);
+                setResult(RESULT_PHOTO_PIC,data);
+                finish();
             }
         }
     }

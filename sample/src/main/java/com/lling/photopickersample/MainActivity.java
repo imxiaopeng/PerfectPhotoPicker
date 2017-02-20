@@ -2,6 +2,7 @@ package com.lling.photopickersample;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -13,9 +14,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 
-import com.lling.photopicker.PhotoPickerActivity;
-import com.lling.photopicker.utils.ImageLoader;
-import com.lling.photopicker.utils.OtherUtils;
+import com.cxp.photopicker.PhotoPickerActivity;
+import com.cxp.photopicker.utils.ImageLoader;
+import com.cxp.photopicker.utils.OtherUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -75,7 +76,6 @@ public class MainActivity extends Activity {
                 if(!TextUtils.isEmpty(mRequestNum.getText())){
                     maxNum = Integer.valueOf(mRequestNum.getText().toString());
                 }
-
                 Intent intent = new Intent(MainActivity.this, PhotoPickerActivity.class);
                 intent.putExtra(PhotoPickerActivity.EXTRA_SHOW_CAMERA, showCamera);
                 intent.putExtra(PhotoPickerActivity.EXTRA_SELECT_MODE, selectedMode);
@@ -92,6 +92,10 @@ public class MainActivity extends Activity {
             if(resultCode == RESULT_OK){
                 ArrayList<String> result = data.getStringArrayListExtra(PhotoPickerActivity.KEY_RESULT);
                 showResult(result);
+            }else if(resultCode == PhotoPickerActivity.RESULT_PHOTO_PIC){
+              Uri mCropedUri=data.getParcelableExtra("result");
+                String imgPath=data.getStringExtra("path");
+                showResult(imgPath);
             }
         }
     }
@@ -102,6 +106,21 @@ public class MainActivity extends Activity {
         }
         mResults.clear();
         mResults.addAll(paths);
+
+        if(mAdapter == null){
+            mAdapter = new GridAdapter(mResults);
+            mGrideView.setAdapter(mAdapter);
+        }else {
+            mAdapter.setPathList(mResults);
+            mAdapter.notifyDataSetChanged();
+        }
+    }
+    private void showResult(String path){
+        if(mResults == null){
+            mResults = new ArrayList<>();
+        }
+        mResults.clear();
+        mResults.add(path);
 
         if(mAdapter == null){
             mAdapter = new GridAdapter(mResults);

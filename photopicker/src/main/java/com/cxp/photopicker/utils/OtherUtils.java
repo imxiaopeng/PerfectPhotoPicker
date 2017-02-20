@@ -1,4 +1,4 @@
-package com.lling.photopicker.utils;
+package com.cxp.photopicker.utils;
 
 import android.content.Context;
 import android.content.pm.PackageInfo;

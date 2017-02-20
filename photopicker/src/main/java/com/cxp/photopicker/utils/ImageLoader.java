@@ -1,4 +1,4 @@
-package com.lling.photopicker.utils;
+package com.cxp.photopicker.utils;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -10,7 +10,7 @@ import android.text.TextUtils;
 import android.util.LruCache;
 import android.widget.ImageView;
 
-import com.lling.photopicker.Application;
+import com.cxp.photopicker.Application;
 
 import java.io.File;
 import java.io.IOException;

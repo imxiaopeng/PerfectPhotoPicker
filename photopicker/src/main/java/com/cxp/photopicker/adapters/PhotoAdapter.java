@@ -1,4 +1,4 @@
-package com.lling.photopicker.adapters;
+package com.cxp.photopicker.adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -10,11 +10,11 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.lling.photopicker.PhotoPickerActivity;
-import com.lling.photopicker.R;
-import com.lling.photopicker.beans.Photo;
-import com.lling.photopicker.utils.ImageLoader;
-import com.lling.photopicker.utils.OtherUtils;
+import com.cxp.photopicker.PhotoPickerActivity;
+import com.cxp.photopicker.R;
+import com.cxp.photopicker.beans.Photo;
+import com.cxp.photopicker.utils.ImageLoader;
+import com.cxp.photopicker.utils.OtherUtils;
 
 import java.util.ArrayList;
 import java.util.List;

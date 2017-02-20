@@ -3,7 +3,7 @@
     android:id="@+id/wrap_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <com.lling.photopicker.widgets.SquareImageView
+    <com.cxp.photopicker.widgets.SquareImageView
         android:id="@+id/imageview_photo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
