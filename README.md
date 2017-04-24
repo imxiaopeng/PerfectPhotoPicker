@@ -1,6 +1,6 @@
 # PhotoPicker   
 
-forked from liuling 
+forked from liuling (https://github.com/zhaoyun2013/photopicker.git)
 An android library to pick photo from gallery
 
 # Sample
